@@ -2,16 +2,19 @@ import pandas as pd
 import torch
 from torch.utils.data import  DataLoader, TensorDataset, Subset
 import lightning as L
-from forcast.Scale.scale_data import Scale
-from forcast.dataloder.sequence import create_sequences_train
+from forecast.Scale.scale_data import Scale
+from forecast.dataload.sequence import create_sequences_train
 class CSVDataModule1(L.LightningDataModule):
-    def __init__(self, file_path='./data.csv', seq_length=10, pred_length=2, batch_size=32,feature_range=(0, 1)):
+    def __init__(self, file_path='./data.csv', seq_length=10, pred_length=2,train_size=0.8,valid_size=0.1,test_size=0.1, batch_size=32,feature_range=(0, 1)):
         super().__init__()
         self.file_path = file_path
         self.seq_length = seq_length
         self.pred_length = pred_length
         self.batch_size = batch_size
         self.feature_range = feature_range
+        self.train_size = train_size
+        self.valid_size = valid_size
+        self.test_size = test_size
     def prepare_data(self):
         pass
     def setup(self, stage=None):
@@ -23,9 +26,9 @@ class CSVDataModule1(L.LightningDataModule):
         X = torch.tensor(X, dtype=torch.float32).unsqueeze(-1)
         y = torch.tensor(y, dtype=torch.float32)
         full_dataset = TensorDataset(X, y)
-        train_size = int(0.8 * len(full_dataset))
-        val_size = int(0.1 * len(full_dataset))
-        test_size = len(full_dataset) - int(0.1 * len(full_dataset)) - int(0.8 * len(full_dataset))
+        train_size = int(self.train_size * len(full_dataset))
+        val_size = int(self.valid_size * len(full_dataset))
+        test_size = len(full_dataset) - int(self.train_size * len(full_dataset)) - int(self.valid_size * len(full_dataset))
         train_indices = list(range(0, train_size))
         val_indices = list(range(train_size, train_size + val_size))
         test_indices = list(range(train_size + val_size, len(full_dataset)))
