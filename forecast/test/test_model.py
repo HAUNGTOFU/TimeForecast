@@ -7,12 +7,13 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 from forecast.Scale.scale_data import inverse_min_max_scaler
 class test_model:
-    def __init__(self,model,model_train_pl,path,seq_len,pre_len,start):
+    def __init__(self,model,model_name,model_train_pl,path,seq_len,pre_len,start):
         self.path = path
         self.seq_len = seq_len
         self.pre_len = pre_len
         self.start = start
         self.model = model
+        self.model_name = model_name
         self.model_train_pl = model_train_pl
     def test_load(self):
         self.df = pd.read_csv(self.path)
@@ -39,7 +40,7 @@ class test_model:
         plt.figure(figsize=(12, 6))
         plt.plot(self.data[self.start+self.seq_len:], color="black", label='actual')
         plt.plot(inverse_min_max_scaler(self.predict().numpy(),self.min,self.max), color="red", label='predictions')
-        plt.title("LSTM")
+        plt.title(f"{self.model_name}")
         plt.legend()
         plt.show()
 
