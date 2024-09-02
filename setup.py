@@ -10,4 +10,3 @@ setuptools.setup(
     url='https://github.com/HAUNGTOFU/TimeForecast',
     zip_safe=False,
     packages=setuptools.find_packages())
-pypi - AgEIcHlwaS5vcmcCJGFkODcxODRjLTRlNGUtNGIwMy04YzdmLWY1NjUwOTQyNTlmZQACKlszLCJjNzFiYzM3My0xNWUwLTQwMmEtYWFlOS03MDg1YzRlYTIyY2UiXQAABiBvRB5vYWdQD5iM4L5Nays3TC0lA7sCMURYqHd8fYaOHA
