@@ -34,14 +34,15 @@ class Module(L.LightningModule):
     def predict_step(self, batch, batch_idx, dataloader_idx=0):
         x, y = batch
         y = y.squeeze()
-        z = self.LSTM_model_name(x)
+        z = self.model_name(x)
         loss = F.mse_loss(z.squeeze(), y.float())
-        return loss, z
+        return z
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer
 def train(model,epochs, accelerator,train_data,valid_data,callbacks:None):
     model = model
-    trainer_lstm = L.Trainer(max_epochs=epochs, accelerator=accelerator,callbacks=None)
+    trainer_lstm = L.Trainer(max_epochs=epochs, accelerator=accelerator,callbacks=callbacks)
     trainer_lstm.fit(model=model, train_dataloaders=train_data, val_dataloaders=valid_data)
+    return trainer_lstm

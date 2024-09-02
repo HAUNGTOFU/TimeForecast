@@ -5,7 +5,8 @@ import lightning as L
 from forecast.Scale.scale_data import Scale
 from forecast.dataload.sequence import create_sequences_train
 class CSVDataModule1(L.LightningDataModule):
-    def __init__(self, file_path='./data.csv', seq_length=10, pred_length=2,train_size=0.8,valid_size=0.1,test_size=0.1, batch_size=32,feature_range=(0, 1)):
+    def __init__(self, file_path='./data.csv', seq_length=10, pred_length=2,train_size=0.8,valid_size=0.1,
+                 test_size=0.1, batch_size=32,feature_range=(0, 1)):
         super().__init__()
         self.file_path = file_path
         self.seq_length = seq_length
@@ -26,12 +27,12 @@ class CSVDataModule1(L.LightningDataModule):
         X = torch.tensor(X, dtype=torch.float32).unsqueeze(-1)
         y = torch.tensor(y, dtype=torch.float32)
         full_dataset = TensorDataset(X, y)
-        train_size = int(self.train_size * len(full_dataset))
-        val_size = int(self.valid_size * len(full_dataset))
-        test_size = len(full_dataset) - int(self.train_size * len(full_dataset)) - int(self.valid_size * len(full_dataset))
-        train_indices = list(range(0, train_size))
-        val_indices = list(range(train_size, train_size + val_size))
-        test_indices = list(range(train_size + val_size, len(full_dataset)))
+        train_size1 = int(self.train_size * len(full_dataset))
+        val_size1 = int(self.valid_size * len(full_dataset))
+        test_size1 = len(full_dataset) - int(self.train_size * len(full_dataset)) - int(self.valid_size * len(full_dataset))
+        train_indices = list(range(0, train_size1))
+        val_indices = list(range(train_size1, train_size1 + val_size1))
+        test_indices = list(range(train_size1 + val_size1,train_size1 + val_size1 + test_size1 ))
         self.train_dataset = Subset(full_dataset, train_indices)
         self.val_dataset = Subset(full_dataset, val_indices)
         self.test_dataset = Subset(full_dataset, test_indices)
@@ -41,10 +42,14 @@ class CSVDataModule1(L.LightningDataModule):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=True, num_workers=0)
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=0)
-def train_val_test(path='./data.csv',seq_length=10, pred_length=2, batch_size=32,feature_range=(0, 1)):
+def train_val_test(path='./data.csv',seq_length=10, pred_length=2,train_size=0.8,valid_size=0.1,test_size=0.1,
+                   batch_size=32,feature_range=(0, 1)):
     data_module_dli = CSVDataModule1(file_path=path
                                      ,seq_length=seq_length
                                      ,pred_length=pred_length
+                                     ,train_size=train_size
+                                     ,valid_size=valid_size
+                                     ,test_size=test_size
                                      ,batch_size=batch_size
                                      ,feature_range=feature_range)
     data_module_dli.prepare_data()

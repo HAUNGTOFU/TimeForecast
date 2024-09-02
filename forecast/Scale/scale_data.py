@@ -22,3 +22,7 @@ class Scale:
         range_values = self.data_max - self.data_min
         original_tensor = scaled_data * range_values + self.data_min
         return original_tensor
+def inverse_min_max_scaler(normalized_tensor, min_values, max_values):
+    range_values = max_values - min_values
+    original_tensor = normalized_tensor * range_values + min_values
+    return original_tensor
