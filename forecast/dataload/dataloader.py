@@ -6,7 +6,7 @@ from forecast.Scale.scale_data import Scale
 from forecast.dataload.sequence import create_sequences_train
 class CSVDataModule1(L.LightningDataModule):
     def __init__(self, file_path='./data.csv', seq_length=10, pred_length=2,train_size=0.8,valid_size=0.1,
-                 test_size=0.1, batch_size=32,feature_range=(0, 1)):
+                 test_size=0.1, batch_size=32,feature_range=(0, 1),num_workers=0):
         super().__init__()
         self.file_path = file_path
         self.seq_length = seq_length
@@ -16,6 +16,7 @@ class CSVDataModule1(L.LightningDataModule):
         self.train_size = train_size
         self.valid_size = valid_size
         self.test_size = test_size
+        self.num_workers = num_workers
     def prepare_data(self):
         pass
     def setup(self, stage=None):
@@ -37,13 +38,13 @@ class CSVDataModule1(L.LightningDataModule):
         self.val_dataset = Subset(full_dataset, val_indices)
         self.test_dataset = Subset(full_dataset, test_indices)
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=0)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=True, num_workers=0)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=0)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
 def train_val_test(path='./data.csv',seq_length=10, pred_length=2,train_size=0.8,valid_size=0.1,test_size=0.1,
-                   batch_size=32,feature_range=(0, 1)):
+                   batch_size=32,feature_range=(0, 1),num_workers=0):
     data_module_dli = CSVDataModule1(file_path=path
                                      ,seq_length=seq_length
                                      ,pred_length=pred_length
@@ -51,7 +52,8 @@ def train_val_test(path='./data.csv',seq_length=10, pred_length=2,train_size=0.8
                                      ,valid_size=valid_size
                                      ,test_size=test_size
                                      ,batch_size=batch_size
-                                     ,feature_range=feature_range)
+                                     ,feature_range=feature_range
+                                     ,num_workers=num_workers)
     data_module_dli.prepare_data()
     data_module_dli.setup()
     train_loader_dli = data_module_dli.train_dataloader()
